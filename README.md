@@ -34,3 +34,50 @@ Configuration
             }
         }
 
+
+        USER_TRACKING_RQ_QUEUE_NAME = 'django-user-tracking-app'
+
+        USER_TRACKING_ENABLED = True
+        USER_TRACKING_LOG_HTML_FRAGMENT_RESPONSE = False
+
+
+
+Client side javascript:
+
+        <script type="text/javascript" src="{% static "js/user_tracking.js" %}"></script>
+
+        user_tracking.register_event(<event_name>, <event_data_json>);
+
+Example:
+
+          function hyperlink_event(button, event){
+            var text = $(button).html();
+            var id= $(button).attr("id");
+            user_tracking.register_event(event, {"url": window.location.pathname, "object": "button", "text": text , "id": id});
+          }
+
+          function button_event(link, event){
+            var text = $(link).html();
+            var href= $(link).attr("href");
+            user_tracking.register_event(event, {"url": window.location.pathname, "object": "hyperlink", "text": text , "href": href});
+          }
+
+          $(function(){
+            $('a').on('click',
+                function() {
+                    hyperlink_event(this, 'click')
+                }
+            );
+
+            $('button').on('click',
+                function() {
+                    button_event(this, 'click')
+                }
+            );
+
+          });
+
+       </script>
+
+
+

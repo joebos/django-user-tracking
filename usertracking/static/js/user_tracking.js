@@ -615,7 +615,7 @@ $(function(){
     // trigger a get to set csrf token
 
     if ($.cookie('user_tracking_verify') !== null){
-        $.post('user-tracking/verify');
+        $.post('/user-tracking/verify');
     }
 });
 
@@ -628,7 +628,7 @@ var user_tracking = (function(){
 
             var event_data_json = JSON.stringify(eventData, null);
 
-            $.post('user-tracking/register-event', { event_name: eventName , event_data : event_data_json});
+            $.post('/user-tracking/register-event', { event_name: eventName , event_data : event_data_json});
         }
     };
 
