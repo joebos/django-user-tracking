@@ -23,17 +23,17 @@ def set_warning_async(**kwargs):
 
 def register_event_async(**kwargs):
 
-    tracking_id = kwargs.get('tracking_id', None)
-    user_id = kwargs.get('user_id', None)
-    session_id = kwargs.get('session_id', None)
+    tracking_id = kwargs.get('tracking_id', '')
+    user_id = kwargs.get('user_id', '')
+    session_id = kwargs.get('session_id', '')
 
-    event_name = kwargs.get('event_name', 'UNDEFINED')
+    event_name = kwargs.get('event_name', '')
     event_time = kwargs.get('event_time', None)
-    event_data = kwargs.get('event_data', None)
+    event_data = kwargs.get('event_data', {})
 
-    request_data = kwargs.get('request', None)
+    request_data = kwargs.get('request', {})
 
-    if kwargs['event_name'] == 'PAGE_VISITED':
+    if kwargs['event_name'] == 'server_middleware_page_view':
         if request_data is not None:
             if '/favicon.ico' in request_data['PATH_INFO']:
                 return
@@ -56,4 +56,5 @@ def register_event_async(**kwargs):
         tracking_event.save()
 
     except Exception as e:
+        print "could not save tracking"
         pass

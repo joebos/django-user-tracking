@@ -33,7 +33,11 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
     if not USER_TRACKING_ENABLED:
         return
 
-    user_id = request.user.get_attr("id", "")
+    #if hasattr(request, "user")
+    user_id = getattr(request.user, "id") if hasattr(request, "user") and hasattr(request.user, 'id') else ''
+    if user_id is None:
+        user_id = ""
+
     tracking_id_unsigned = verify_tracking_key(tracking_id)
 
     if tracking_id_unsigned is None:
@@ -43,14 +47,14 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
     params = {
         'tracking_id': tracking_id,
         'user_id': user_id,
-        'event_time': datetime.now(),
+        'event_time': datetime.utcnow(),
         'event_name': event_name,
         'event_data': event_data,
     }
 
     if not request is None:
         params['request'] = get_tracking_data_from_request(request)
-        params['session_id'] = request.session.id
+        params['session_id'] = request.session.session_key if hasattr(request, 'session') and request.session.session_key is not None else ''
 
     user_tracking_rq_queue.enqueue(register_event_async, args=[], kwargs=params)
 
@@ -112,7 +116,7 @@ def register_user_logged_in(sender, request, user, **kwargs):
 
         register_event(tracking_id=tracking_id, event_name='server_signal_user_logged_in', request=request, event_data=event_data)
     else:
-        set_warning(message="User logged-in but doesn't have cookie set.", user_id = user.id)
+        log_error(message="User logged-in but doesn't have cookie set.", user_id = user.id)
 
 user_logged_in.connect(register_user_logged_in, dispatch_uid="USER_TRACKING_USER_LOGGED_IN")
 
@@ -129,6 +133,6 @@ def register_user_logged_out(sender, request, user, **kwargs):
 
         register_event(tracking_id=cookie, event_name='server_signal_user_logged_out', request=request, event_data=event_data)
     else:
-        set_warning(message="User logged-out but doesn't have cookie set.", user_id= user.id)
+        log_error(message="User logged-out but doesn't have cookie set.", user_id= user.id)
 
 user_logged_out.connect(register_user_logged_out, dispatch_uid="USER_TRACKING_USER_LOGGED_OUT")
