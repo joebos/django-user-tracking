@@ -50,6 +50,7 @@ Client side javascript:
 
 Example:
 
+        <script>
           function hyperlink_event(button, event){
             var text = $(button).html();
             var id= $(button).attr("id");
