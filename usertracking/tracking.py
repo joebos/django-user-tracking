@@ -55,6 +55,7 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
     if not request is None:
         params['request'] = get_tracking_data_from_request(request)
         params['session_id'] = request.session.session_key if hasattr(request, 'session') and request.session.session_key is not None else ''
+        params['impersonate'] = request.impersonator if hasattr(request, 'impersonator') else ''
 
     user_tracking_rq_queue.enqueue(register_event_async, args=[], kwargs=params)
 

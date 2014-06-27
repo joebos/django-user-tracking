@@ -30,6 +30,7 @@ def register_event_async(**kwargs):
     event_name = kwargs.get('event_name', '')
     event_time = kwargs.get('event_time', None)
     event_data = kwargs.get('event_data', {})
+    impersonator = kwargs.get('impersonate', '')
 
     request_data = kwargs.get('request', {})
 
@@ -46,6 +47,7 @@ def register_event_async(**kwargs):
         tracking_event.tracking_id = tracking_id
         tracking_event.user_id = user_id
         tracking_event.session_id = session_id
+        tracking_event.impersonator = impersonator
 
         tracking_event.event_time = event_time
         tracking_event.event_name = event_name
@@ -57,4 +59,4 @@ def register_event_async(**kwargs):
 
     except Exception as e:
         print "could not save tracking"
-        pass
+        raise
