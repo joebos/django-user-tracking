@@ -46,7 +46,7 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
         return
 
     params = {
-        'tracking_id': tracking_id,
+        'tracking_id': tracking_id_unsigned,
         'user_id': user_id,
         'event_time': datetime.utcnow(),
         'event_name': event_name,
@@ -59,7 +59,7 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
         params['impersonate'] = request.impersonator if hasattr(request, 'impersonator') else ''
 
     user_tracking_rq_queue.enqueue(register_event_async, args=[], kwargs=params)
-    user_tracking_event_happened.send(sender=register_event.__name__, request=request, event_name=event_name, event_data=event_data)
+    user_tracking_event_happened.send(sender=register_event.__name__, request=request, event_name=event_name, event_data=event_data, kwargs=params)
 
 def log_error(message='', tracking_id=None, user_id=None):
 
