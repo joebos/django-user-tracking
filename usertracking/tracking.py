@@ -28,6 +28,23 @@ def verify_tracking_key(key):
     except  BadSignature:
         return None
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+def get_server_name():
+    import socket
+    try:
+        HOSTNAME = socket.gethostname()
+    except:
+        HOSTNAME = 'localhost'
+    return HOSTNAME
+
 
 def register_event(tracking_id=None, event_name=None, event_data=None, request=None):
 
@@ -51,12 +68,16 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
         'event_time': datetime.utcnow(),
         'event_name': event_name,
         'event_data': event_data,
+        'impersonate': '',
+        'client_ip': '',
+        "server_name": get_server_name()
     }
 
     if not request is None:
         params['request'] = get_tracking_data_from_request(request)
         params['session_id'] = request.session.session_key if hasattr(request, 'session') and request.session.session_key is not None else ''
         params['impersonate'] = request.impersonator if hasattr(request, 'impersonator') else ''
+        params['client_ip']= get_client_ip(request)
 
     user_tracking_rq_queue.enqueue(register_event_async, args=[], kwargs=params)
     user_tracking_event_happened.send(sender=register_event.__name__, request=request, event_name=event_name, event_data=event_data, kwargs=params)
