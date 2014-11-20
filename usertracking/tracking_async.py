@@ -36,7 +36,8 @@ def register_event_async(**kwargs):
     if event_data is None:
         event_data = {}
     else:
-        event_data = json.loads(event_data)
+        if isinstance(event_data, basestring):
+            event_data = json.loads(event_data)
     event_data["server_name"] = server_name
     event_data["client_ip"] = client_ip
 
