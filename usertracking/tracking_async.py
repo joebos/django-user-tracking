@@ -33,6 +33,8 @@ def register_event_async(**kwargs):
     impersonator = kwargs.get('impersonate', '')
     server_name = kwargs.get('server_name', '')
     client_ip = kwargs.get('client_ip', '')
+    if event_data is None:
+        event_data = {}
     event_data["server_name"] = server_name
     event_data["client_ip"] = client_ip
 
