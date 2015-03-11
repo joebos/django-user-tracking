@@ -78,6 +78,12 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
         params['session_id'] = request.session.session_key if hasattr(request, 'session') and request.session.session_key is not None else ''
         params['impersonate'] = request.impersonator if hasattr(request, 'impersonator') else ''
         params['client_ip']= get_client_ip(request)
+        params['ref'] = request.GET.get("ref", "")
+        if params['ref'] == "":
+            params['ref'] = request.session['user_tracking_ref'] if 'user_tracking_ref' in request.session else ''
+        else:
+            request.session['user_tracking_ref'] = params["ref"]
+            request.session.modified = True
 
     user_tracking_rq_queue.enqueue(register_event_async, args=[], kwargs=params)
     user_tracking_event_happened.send(sender=register_event.__name__, request=request, event_name=event_name, event_data=event_data, kwargs=params)

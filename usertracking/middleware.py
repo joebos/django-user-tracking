@@ -7,6 +7,7 @@ USER_TRACKING_LOG_HTML_FRAGMENT_RESPONSE = getattr(settings, "USER_TRACKING_LOG_
 class UserTrackingMiddleware(object):
 
     def process_request(self, request):
+        #request.session["test"] = "good"
         return None
 
     def process_response(self, request, response):
