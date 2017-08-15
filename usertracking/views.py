@@ -1,6 +1,6 @@
 from django.views.generic import View
 from django.http import HttpResponse
-from tracking import register_event
+from tracking import register_event, generate_new_tracking_key
 
 class VerifyView(View):
     '''
@@ -35,7 +35,11 @@ class RegisterEventView(View):
             event_data = raw_event_data
 
         tracking_id = self.request.COOKIES.get('user_tracking_id', None)
+        if tracking_id is None:
+            tracking_id = generate_new_tracking_key()
+
         register_event(tracking_id=tracking_id, event_name=event_name, request=self.request, event_data=event_data)
         response = HttpResponse('OK')
+        response.set_cookie('user_tracking_id', tracking_id)
 
         return response
