@@ -58,9 +58,9 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
 
     tracking_id_unsigned = verify_tracking_key(tracking_id)
 
-    if tracking_id_unsigned is None:
-        log_error(message='tracking id cookie has been tampered', tracking_id=tracking_id, user_id=user_id)
-        return
+    #if tracking_id_unsigned is None:
+    #    log_error(message='tracking id cookie has been tampered', tracking_id=tracking_id, user_id=user_id)
+    #    return
 
     params = {
         'tracking_id': tracking_id_unsigned,

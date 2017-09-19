@@ -30,7 +30,7 @@ class RegisterEventView(View):
 
         if raw_event_data is not None:
             #truncate at 1024 character to avoid malicious content
-            event_data = (raw_event_data[:102400] + '..') if len(raw_event_data) > 102400 else raw_event_data
+            event_data = (raw_event_data[:202400] + '..') if len(raw_event_data) > 202400 else raw_event_data
         else:
             event_data = raw_event_data
 
