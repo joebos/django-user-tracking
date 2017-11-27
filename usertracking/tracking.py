@@ -80,7 +80,7 @@ def register_event(tracking_id=None, event_name=None, event_data=None, request=N
         params['client_ip']= get_client_ip(request)
         params['ref'] = request.GET.get("ref", "")
         if params['ref'] == "":
-            params['ref'] = request.session['user_tracking_ref'] if 'user_tracking_ref' in request.session else ''
+            params['ref'] = request.session['user_tracking_ref'] if  hasattr(request, "session") and 'user_tracking_ref' in request.session else ''
         else:
             request.session['user_tracking_ref'] = params["ref"]
             request.session.modified = True
